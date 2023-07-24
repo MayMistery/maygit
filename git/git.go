@@ -1,7 +1,6 @@
 package git
 
 import (
-	"io/ioutil"
 	"os"
 	"os/exec"
 )
@@ -40,7 +39,7 @@ pass = password
 scp = false
 private = false
 `
-		if err := ioutil.WriteFile(configurePath, []byte(content), 0644); err != nil {
+		if err := os.WriteFile(configurePath, []byte(content), 0644); err != nil {
 			return err
 		}
 	}

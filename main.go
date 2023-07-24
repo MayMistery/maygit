@@ -8,7 +8,6 @@ import (
 	"maygit/git"
 	"maygit/ssh"
 	"maygit/utils"
-	"os/exec"
 	"strings"
 )
 
@@ -48,9 +47,8 @@ func ParseFlag(cfg *cmd.FlagConfig) error {
 		}
 		fmt.Printf("%s\n", recentTar)
 
-		tarCmd := utils.TarUnPack(recentTar, cfg.Unpack)
-
-		if err := exec.Command("bash", "-c", tarCmd).Run(); err != nil {
+		err = utils.TargzUnPack(recentTar, cfg.Unpack)
+		if err != nil {
 			log.Fatalf("Failed to unpack2: %v", err)
 			return nil
 		}
