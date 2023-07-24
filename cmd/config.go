@@ -8,11 +8,12 @@ import (
 )
 
 type Config struct {
-	Host string
-	Port string
-	User string
-	Pass string
-	Scp  bool
+	Host    string
+	Port    string
+	User    string
+	Pass    string
+	Scp     bool
+	Private string
 }
 
 func LoadConfig(filePath string) (Config, error) {
@@ -48,7 +49,10 @@ func LoadConfig(filePath string) (Config, error) {
 			} else {
 				return Config{}, fmt.Errorf("invalid value for scp: %s", value)
 			}
+		case "private":
+			config.Private = value
 		}
+
 	}
 
 	if err := scanner.Err(); err != nil {

@@ -24,13 +24,30 @@ func getIPAddress(addr net.Addr) string {
 	return ""
 }
 
-// establishSSHConnection establishes an SSH connection and returns it.
 func establishSSHConnection(config cmd.Config) (*ssh.Client, error) {
-	return ssh.Dial("tcp", fmt.Sprintf("%s:%s", config.Host, config.Port), &ssh.ClientConfig{
-		User:            config.User,
-		Auth:            []ssh.AuthMethod{ssh.Password(config.Pass)},
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-	})
+	if config.Private != "false" {
+		key, err := os.ReadFile(config.Private)
+		if err != nil {
+			return nil, fmt.Errorf("unable to read private key: %v", err)
+		}
+
+		signer, err := ssh.ParsePrivateKey(key)
+		if err != nil {
+			return nil, fmt.Errorf("unable to parse private key: %v", err)
+		}
+
+		return ssh.Dial("tcp", fmt.Sprintf("%s:%s", config.Host, config.Port), &ssh.ClientConfig{
+			User:            config.User,
+			Auth:            []ssh.AuthMethod{ssh.PublicKeys(signer)},
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		})
+	} else {
+		return ssh.Dial("tcp", fmt.Sprintf("%s:%s", config.Host, config.Port), &ssh.ClientConfig{
+			User:            config.User,
+			Auth:            []ssh.AuthMethod{ssh.Password(config.Pass)},
+			HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		})
+	}
 }
 
 func TestSSHConnection(config cmd.Config) error {

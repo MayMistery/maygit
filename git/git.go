@@ -22,6 +22,8 @@ bk
 patch
 configure
 .DS_Store
+private
+id_rsa
 `
 		if err := os.WriteFile(gitignorePath, []byte(content), 0644); err != nil {
 			return err
@@ -36,6 +38,7 @@ port = 22
 user = root
 pass = password
 scp = false
+private = false
 `
 		if err := ioutil.WriteFile(configurePath, []byte(content), 0644); err != nil {
 			return err
