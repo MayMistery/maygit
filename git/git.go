@@ -23,6 +23,7 @@ configure
 .DS_Store
 private
 id_rsa
+._*
 `
 		if err := os.WriteFile(gitignorePath, []byte(content), 0644); err != nil {
 			return err
