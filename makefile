@@ -1,35 +1,32 @@
-# Makefile for cross-compiling the mgit project
+# Makefile for cross-compiling the maygit project
 
+export PATH := $(GOPATH)/bin:$(PATH)
+export GO111MODULE=on
 BINARY=mgit
-VERSION=1.0.0
+VERSION=1.3.0
 BUILD=`git rev-parse HEAD`
 
-LDFLAGS=-ldflags "-X main.Version=${VERSION} -X main.Build=${BUILD}"
-GOENV=CGO_ENABLED=0
+LDFLAGS := -s -w -X main.Version=${VERSION} -X main.Build=${BUILD}
 
-# Build for all platforms
-all: windows linux darwin
+os-archs=darwin:amd64 darwin:arm64 freebsd:386 freebsd:amd64 linux:386 linux:amd64 linux:arm linux:arm64 windows:386 windows:amd64 windows:arm64 linux:mips64 linux:mips64le linux:mips:softfloat linux:mipsle:softfloat linux:riscv64
 
-# Windows
-windows:
-	${GOENV} GOOS=windows GOARCH=amd64 go build ${LDFLAGS} -o build/${BINARY}-windows-amd64.exe
-	${GOENV} GOOS=windows GOARCH=386 go build ${LDFLAGS} -o build/${BINARY}-windows-386.exe
+all: build
 
-# Linux
-linux:
-	${GOENV} GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o build/${BINARY}-linux-amd64
-	${GOENV} GOOS=linux GOARCH=386 go build ${LDFLAGS} -o build/${BINARY}-linux-386
-	${GOENV} GOOS=linux GOARCH=arm GOARM=5 go build ${LDFLAGS} -o build/${BINARY}-linux-arm5
-	${GOENV} GOOS=linux GOARCH=arm GOARM=6 go build ${LDFLAGS} -o build/${BINARY}-linux-arm6
-	${GOENV} GOOS=linux GOARCH=arm GOARM=7 go build ${LDFLAGS} -o build/${BINARY}-linux-arm7
-	${GOENV} GOOS=linux GOARCH=arm64 go build ${LDFLAGS} -o build/${BINARY}-linux-arm64
+build: app
 
-# macOS
-darwin:
-	${GOENV} GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o build/${BINARY}-darwin-amd64
-	${GOENV} GOOS=darwin GOARCH=arm64 go build ${LDFLAGS} -o build/${BINARY}-darwin-arm64
+app:
+	@$(foreach n, $(os-archs),\
+		os=$(shell echo "$(n)" | cut -d : -f 1);\
+		arch=$(shell echo "$(n)" | cut -d : -f 2);\
+		gomips=$(shell echo "$(n)" | cut -d : -f 3);\
+		target_suffix=$${os}_$${arch};\
+		echo "Build $${os}-$${arch}...";\
+		env CGO_ENABLED=0 GOOS=$${os} GOARCH=$${arch} GOMIPS=$${gomips} go build -trimpath -ldflags "$(LDFLAGS)" -o ./build/${BINARY}_$${target_suffix} ;\
+		echo "Build $${os}-$${arch} done";\
+	)
+	@mv ./build/${BINARY}_windows_386 ./build/${BINARY}_windows_386.exe
+	@mv ./build/${BINARY}_windows_amd64 ./build/${BINARY}_windows_amd64.exe
+	@mv ./build/${BINARY}_windows_arm64 ./build/${BINARY}_windows_arm64.exe
 
 clean:
-	rm -rf build/
-
-.PHONY: windows linux darwin clean
+	rm -rf ./build/
