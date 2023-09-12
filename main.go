@@ -81,7 +81,7 @@ func ParseFlag(cfg *cmd.FlagConfig) error {
 		return nil
 	}
 
-	config, err := cmd.LoadConfig("configure")
+	config, err := cmd.LoadConfig("cfg.ini")
 	if err != nil {
 		log.Fatalf("Failed to load config: %v", err)
 	}

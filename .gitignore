@@ -6,6 +6,6 @@ patch
 .vsc
 maygit
 edr
-configure
+cfg.ini
 .DS_Store
 id_rsa

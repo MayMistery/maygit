@@ -31,7 +31,7 @@ id_rsa
 	}
 
 	// Create configure if it doesn't exist
-	configurePath := "configure"
+	configurePath := "cfg.ini"
 	if _, err := os.Stat(configurePath); os.IsNotExist(err) {
 		content := `host = 127.0.0.1
 port = 22

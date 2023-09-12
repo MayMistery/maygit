@@ -1,63 +1,24 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strings"
+	"github.com/go-ini/ini"
 )
 
 type Config struct {
-	Host    string
-	Port    string
-	User    string
-	Pass    string
-	Scp     bool
-	Private string
+	Host    string `ini:"host"`
+	Port    string `ini:"port"`
+	User    string `ini:"user"`
+	Pass    string `ini:"pass"`
+	Scp     bool   `ini:"scp"`
+	Private string `ini:"private"`
 }
 
 func LoadConfig(filePath string) (Config, error) {
-	file, err := os.Open(filePath)
+	var cfg = new(Config)
+	err := ini.MapTo(cfg, filePath)
 	if err != nil {
-		return Config{}, err
+		fmt.Print(err)
 	}
-	defer file.Close()
-
-	config := Config{}
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		parts := strings.SplitN(line, " = ", 2)
-		if len(parts) != 2 {
-			continue
-		}
-		key, value := strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1])
-		switch key {
-		case "host":
-			config.Host = value
-		case "port":
-			config.Port = value
-		case "user":
-			config.User = value
-		case "pass":
-			config.Pass = value
-		case "scp":
-			if value == "true" {
-				config.Scp = true
-			} else if value == "false" {
-				config.Scp = false
-			} else {
-				return Config{}, fmt.Errorf("invalid value for scp: %s", value)
-			}
-		case "private":
-			config.Private = value
-		}
-
-	}
-
-	if err := scanner.Err(); err != nil {
-		return Config{}, err
-	}
-
-	return config, nil
+	return *cfg, nil
 }

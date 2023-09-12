@@ -69,8 +69,8 @@ func downloadRemoteWithSCP(client *ssh.Client, localDir string, remoteDir string
 	remotePath := fmt.Sprintf("%s:%s/%s", remoteAddr, remoteDir, filename)
 	localPath := filepath.Join(localDir, filename)
 
-	cmd := exec.Command("scp", "-P", strconv.Itoa(client.RemoteAddr().(*net.TCPAddr).Port), remotePath, localPath)
-	return cmd.Run()
+	command := exec.Command("scp", "-P", strconv.Itoa(client.RemoteAddr().(*net.TCPAddr).Port), remotePath, localPath)
+	return command.Run()
 }
 
 func uploadRemoteWithSCP(client *ssh.Client, localDir string, remoteDir string, filename string) (string, error) {
@@ -78,8 +78,8 @@ func uploadRemoteWithSCP(client *ssh.Client, localDir string, remoteDir string, 
 	localPath := filepath.Join(localDir, filename)
 	remotePath := fmt.Sprintf("%s:%s/%s", remoteAddr, remoteDir, filename)
 
-	cmd := exec.Command("scp", "-P", strconv.Itoa(client.RemoteAddr().(*net.TCPAddr).Port), localPath, remotePath)
-	if err := cmd.Run(); err != nil {
+	command := exec.Command("scp", "-P", strconv.Itoa(client.RemoteAddr().(*net.TCPAddr).Port), localPath, remotePath)
+	if err := command.Run(); err != nil {
 		return "", err
 	}
 	return fmt.Sprintf("%s/%s", remoteDir, filename), nil
