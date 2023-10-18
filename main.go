@@ -299,7 +299,7 @@ func ParseFlag(cfg *cmd.FlagConfig) error {
 			if err != nil {
 				log.Fatalf("Failed to initialize git: %v", err)
 			}
-			parts := strings.Split("/challenge,/tmp", ",")
+			parts := strings.Split("/home/ctf/challenge,/tmp", ",")
 			_, err = ssh.BackupRemoteDir(config, parts[0], parts[1], true)
 			if err != nil {
 				log.Fatalf("Failed to backup and download remote directory: %v", err)
@@ -325,7 +325,30 @@ func ParseFlag(cfg *cmd.FlagConfig) error {
 			} else {
 				fmt.Println("Commit SHA:", sha)
 			}
+			err = git.GeneratePatchScript("1")
+			if err != nil {
+				log.Fatalf("Failed to generate patch script: %v", err)
+			}
 			parts := strings.Split("*.patch,/var/www,/tmp", ",")
+			filePattern, targetDir, tmpDir := parts[0], parts[1], parts[2]
+			err = ssh.UploadAndRunPatch(config, filePattern, targetDir, tmpDir)
+			if err != nil {
+				log.Fatalf("Failed to upload and execute script: %v", err)
+			}
+			return nil
+		case "cpp":
+			now := time.Now()
+			sha, err := git.CommitChanges(now.Format("2006-01-02 15:04:05"))
+			if err != nil {
+				log.Fatalf("Failed to commit changes: %v", err)
+			} else {
+				fmt.Println("Commit SHA:", sha)
+			}
+			err = git.GeneratePatchScript("1")
+			if err != nil {
+				log.Fatalf("Failed to generate patch script: %v", err)
+			}
+			parts := strings.Split("*.patch,/home/ctf,/tmp", ",")
 			filePattern, targetDir, tmpDir := parts[0], parts[1], parts[2]
 			err = ssh.UploadAndRunPatch(config, filePattern, targetDir, tmpDir)
 			if err != nil {
