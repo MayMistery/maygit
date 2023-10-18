@@ -1,6 +1,8 @@
 package cmd
 
-import "flag"
+import (
+	"flag"
+)
 
 type FlagConfig struct {
 	UI                    bool
@@ -18,19 +20,21 @@ type FlagConfig struct {
 	GenFlag               string
 	PFlag                 string
 	HelpFlag              bool
+	Function              string
 }
 
 func Flags() *FlagConfig {
 	config := &FlagConfig{}
 
 	flag.BoolVar(&config.HelpFlag, "h", false, "Display help information")
-	flag.StringVar(&config.Unpack, "up", "", "Unpack .tar.gz")
 	flag.BoolVar(&config.TestFlag, "t", false, "Test SSH and SFTP connection")
 	flag.BoolVar(&config.InitFlag, "i", false, "Initialize git in current directory")
+	flag.Int64Var(&config.TimestampFlag, "u", -1, "Convert a timestamp to human-readable date")
+
+	flag.StringVar(&config.Unpack, "up", "", "Unpack .tar.gz")
 	flag.StringVar(&config.CommitFlag, "c", "", "Commit changes with the provided message")
 	flag.StringVar(&config.BackupFlag, "b", "", "Backup a remote directory")
 	flag.StringVar(&config.BackupAndDownloadFlag, "bk", "", "Backup and download a remote directory")
-	flag.Int64Var(&config.TimestampFlag, "u", -1, "Convert a timestamp to human-readable date")
 	flag.StringVar(&config.EdrFlag, "edr", "", "Upload contents and execute a command")
 	flag.StringVar(&config.DieFlag, "die", "", "Force delete content in a remote directory")
 	flag.StringVar(&config.EmergFlag, "emerg", "", "Backup current directory (excluding certain folders) and upload to remote directory")
@@ -39,6 +43,14 @@ func Flags() *FlagConfig {
 	flag.StringVar(&config.PFlag, "p", "", "Upload the specified .sh file to the remote server and execute it in the specified directory")
 
 	flag.Parse()
+
+	flag.StringVar(&config.Function, "Func", "", "func to use")
+
+	args := flag.Args()
+	if len(args) > 0 {
+		funcStr := args[len(args)-1]
+		config.Function = funcStr
+	}
 
 	return config
 }

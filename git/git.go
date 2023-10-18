@@ -1,8 +1,10 @@
 package git
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 func InitGit() error {
@@ -35,11 +37,28 @@ id_rsa
 	if _, err := os.Stat(configurePath); os.IsNotExist(err) {
 		content := `host = 127.0.0.1
 port = 22
-user = root
+user = ctf
 pass = password
 scp = false
-private = false
+private = %s
 `
+		// check if PEM exist
+		files, err := os.ReadDir(".")
+		if err != nil {
+			return err
+		}
+
+		var pemFile string
+		for _, f := range files {
+			if strings.HasSuffix(f.Name(), ".pem") {
+				pemFile = f.Name()
+				break
+			}
+		}
+		if pemFile == "" {
+			pemFile = "false"
+		}
+		content = fmt.Sprintf(content, pemFile)
 		if err := os.WriteFile(configurePath, []byte(content), 0644); err != nil {
 			return err
 		}
