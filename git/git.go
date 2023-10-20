@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 func InitGit() error {
@@ -33,6 +34,7 @@ id_rsa
 	}
 
 	// Create configure if it doesn't exist
+	// TODO add workdir
 	configurePath := "cfg.ini"
 	if _, err := os.Stat(configurePath); os.IsNotExist(err) {
 		content := `host = 127.0.0.1
@@ -41,7 +43,9 @@ user = ctf
 pass = password
 scp = false
 private = %s
+workdir = /home/ctf/challenge
 `
+
 		// check if PEM exist
 		files, err := os.ReadDir(".")
 		if err != nil {
@@ -77,6 +81,9 @@ private = %s
 }
 
 func CommitChanges(message string) (string, error) {
+	if message == "" {
+		message = time.Now().Format("2006-01-02 15:04:05")
+	}
 	if err := exec.Command("git", "add", "-A").Run(); err != nil {
 		return "", err
 	}

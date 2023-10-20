@@ -1,12 +1,12 @@
-package ssh
+package _ssh
 
 import (
 	"fmt"
+	"github.com/MayMistery/maygit/cmd"
+	"github.com/MayMistery/maygit/utils"
 	"github.com/pkg/sftp"
 	"golang.org/x/crypto/ssh"
 	"io"
-	"maygit/cmd"
-	"maygit/utils"
 	"net"
 	"os"
 	"os/exec"
@@ -24,7 +24,7 @@ func getIPAddress(addr net.Addr) string {
 	return ""
 }
 
-func establishSSHConnection(config cmd.Config) (*ssh.Client, error) {
+func EstablishSSHConnection(config cmd.Config) (*ssh.Client, error) {
 	if config.Private != "false" {
 		key, err := os.ReadFile(config.Private)
 		if err != nil {
@@ -51,7 +51,7 @@ func establishSSHConnection(config cmd.Config) (*ssh.Client, error) {
 }
 
 func TestSSHConnection(config cmd.Config) error {
-	client, err := establishSSHConnection(config)
+	client, err := EstablishSSHConnection(config)
 	if err != nil {
 		return err
 	}
@@ -186,11 +186,11 @@ func uploadRemote(client *ssh.Client, localDir string, remoteDir string, filenam
 	return remoteFilePath, nil
 }
 
-func BackupRemoteDir(config cmd.Config, remoteDir string, BkDir string, download bool) (string, error) {
+func BackupRemoteDir(config cmd.Config, remoteDir string, tmpDir string, download bool) (string, error) {
 	// Define the backup filename using a timestamp
 	filename := fmt.Sprintf("html_%d.tar.gz", time.Now().Unix())
 
-	client, err := establishSSHConnection(config)
+	client, err := EstablishSSHConnection(config)
 	if err != nil {
 		return "", err
 	}
@@ -208,19 +208,19 @@ func BackupRemoteDir(config cmd.Config, remoteDir string, BkDir string, download
 		backupDir = pathParts[len(pathParts)-1]
 	}
 
-	backupCmd := utils.TarPack(remoteDir, BkDir, filename, backupDir)
+	backupCmd := utils.TarPack(remoteDir, tmpDir, filename, backupDir)
 	if err := session.Run(backupCmd); err != nil {
 		return "", err
 	}
 
 	if download {
 		if config.Scp {
-			err := downloadRemoteWithSCP(client, "bk", BkDir, filename)
+			err := downloadRemoteWithSCP(client, "bk", tmpDir, filename)
 			if err != nil {
 				return "", err
 			}
 		} else {
-			err := downloadRemote(client, "bk", BkDir, filename)
+			err := downloadRemote(client, "bk", tmpDir, filename)
 			if err != nil {
 				return "", err
 			}
@@ -230,7 +230,7 @@ func BackupRemoteDir(config cmd.Config, remoteDir string, BkDir string, download
 }
 
 func DeleteRemoteDirContent(config cmd.Config, dir string) error {
-	client, err := establishSSHConnection(config)
+	client, err := EstablishSSHConnection(config)
 	if err != nil {
 		return err
 	}
@@ -246,7 +246,7 @@ func DeleteRemoteDirContent(config cmd.Config, dir string) error {
 }
 
 func UploadEdr(config cmd.Config, localDir, remoteDir, command string) error {
-	client, err := establishSSHConnection(config)
+	client, err := EstablishSSHConnection(config)
 	if err != nil {
 		return err
 	}
@@ -273,7 +273,7 @@ func EmergencyBackupAndUpload(config cmd.Config, localDir, targetDir, tmpDir str
 	}
 	//defer os.Remove(localBackupFile)
 
-	client, err := establishSSHConnection(config)
+	client, err := EstablishSSHConnection(config)
 	if err != nil {
 		return err
 	}
@@ -306,7 +306,7 @@ func UploadAndExtract(config cmd.Config, filePattern, targetDir, tmpDir string) 
 	// Find the latest file that matches the pattern
 	latestFile, err := utils.FindRecentFile("bk", filePattern)
 
-	client, err := establishSSHConnection(config)
+	client, err := EstablishSSHConnection(config)
 	if err != nil {
 		return err
 	}
@@ -344,7 +344,7 @@ func UploadAndRunPatch(config cmd.Config, filePattern, targetDir, tmpDir string)
 	latestFile, err := utils.FindRecentFile("patch", filePattern)
 
 	// Establish SSH connection
-	client, err := establishSSHConnection(config)
+	client, err := EstablishSSHConnection(config)
 	if err != nil {
 		return err
 	}

@@ -12,6 +12,7 @@ type Config struct {
 	Pass    string `ini:"pass"`
 	Scp     bool   `ini:"scp"`
 	Private string `ini:"private"`
+	Workdir string `ini:"workdir"`
 }
 
 func LoadConfig(filePath string) (Config, error) {

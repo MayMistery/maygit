@@ -1,4 +1,4 @@
-module github.com/MayMistery/maygit
+module github.com/MayMistery/maygit/shell
 
 go 1.20
 

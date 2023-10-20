@@ -86,3 +86,7 @@ func FindRecentFile(dir, filePattern string) (string, error) {
 
 	return latestFile, nil
 }
+
+func ModifyAuth(permit string, target string) {
+	// TODO add function to modify the file to the expect Permission
+}
