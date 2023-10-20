@@ -2,6 +2,10 @@ package cli
 
 import (
 	"fmt"
+	"github.com/MayMistery/maygit/_ssh"
+	"github.com/MayMistery/maygit/cmd"
+	"github.com/MayMistery/maygit/git"
+	"github.com/MayMistery/maygit/utils"
 	"log"
 	"strings"
 )

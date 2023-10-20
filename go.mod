@@ -12,5 +12,4 @@ require (
 	github.com/kr/fs v0.1.0 // indirect
 	github.com/stretchr/testify v1.8.0 // indirect
 	golang.org/x/sys v0.10.0 // indirect
-	golang.org/x/term v0.10.0 // indirect
 )
