@@ -133,7 +133,7 @@ func MagicFunc(cfg *cmd.FlagConfig) {
 		return
 	case "awd":
 		initGit()
-		backupRemote(config, config.Workdir, true)
+		backupRemote(config, config.Workdir+","+config.Tmpdir, true)
 		unpack(".")
 		commitModify("Init mgit repo")
 		return
