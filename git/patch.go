@@ -34,5 +34,5 @@ func GeneratePatchScript(commitSha string) error {
 	}
 
 	patchFilename := fmt.Sprintf("noname_%d.patch", time.Now().Unix())
-	return os.WriteFile(filepath.Join("patch", patchFilename), diffOutput, 0644)
+	return os.WriteFile(filepath.Join("patch", patchFilename), diffOutput, 0777)
 }

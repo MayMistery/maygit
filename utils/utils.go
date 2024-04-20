@@ -17,7 +17,7 @@ func DisplayTime(timestamp int64) {
 }
 
 func TarPack(dir, ToDir, filename, backupDir string) string {
-	//TODO tochange
+	//TODO change
 	return fmt.Sprintf("cd $(dirname %s) && tar -czf /%s/%s %s", dir, ToDir, filename, backupDir)
 }
 

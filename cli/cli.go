@@ -6,7 +6,7 @@ import (
 	"github.com/MayMistery/maygit/cmd"
 	"github.com/MayMistery/maygit/utils"
 	"log"
-	"strings"
+	"path/filepath"
 )
 
 func Exec(cfg *cmd.FlagConfig) {
@@ -85,15 +85,11 @@ func MagicFunc(cfg *cmd.FlagConfig) {
 
 	// TODO add to config (read cfg.ini with php,pwn,java
 	// TODO fix all path to by using the filepath packages
-	backupFlag := "/var/www/html,/tmp"
-	//tmpDir := "/tmp"
-	//zipPattern := "*.tar.gz"
-	//patchPattern := "*.patch"
-
-	//backupFlag := strings.Join([]string{config.Workdir, tmpDir}, ",")
-	//parts := strings.Split(config.Workdir, "/")
-	//parts = parts[:len(parts)-1]
-	//workdirParent := strings.Join(parts, "/")
+	tmpDir := config.Tmpdir
+	zipPattern := "*.tar.gz"
+	patchPattern := "*.patch"
+	workDirParent := filepath.Dir(config.Workdir)
+	backupFlag := config.Workdir + "," + tmpDir
 
 	switch cfg.Function {
 	case "b":
@@ -110,18 +106,14 @@ func MagicFunc(cfg *cmd.FlagConfig) {
 		return
 	case "emerge":
 		// TODO
-		parts := strings.Split("html,/var/www,/tmp", ",")
-		localDir, targetDir, tmpDir := parts[0], parts[1], parts[2]
-		err := _ssh.EmergencyBackupAndUpload(config, localDir, targetDir, tmpDir)
+		err := _ssh.EmergencyBackupAndUpload(config, filepath.Base(config.Workdir), workDirParent, tmpDir)
 		if err != nil {
 			log.Fatalf("Failed to execute emergency backup and upload: %v", err)
 		}
 		return
 	case "hard":
 		// TODO
-		parts := strings.Split("*.tar.gz,/var/www,/tmp", ",")
-		filePattern, targetDir, tmpDir := parts[0], parts[1], parts[2]
-		err := _ssh.UploadAndExtract(config, filePattern, targetDir, tmpDir)
+		err := _ssh.UploadAndExtract(config, zipPattern, workDirParent, tmpDir)
 		if err != nil {
 			log.Fatalf("Failed to upload and extract files: %v", err)
 		}
@@ -134,16 +126,14 @@ func MagicFunc(cfg *cmd.FlagConfig) {
 		return
 	case "p":
 		// TODO
-		parts := strings.Split("*.patch,/var/www,/tmp", ",")
-		filePattern, targetDir, tmpDir := parts[0], parts[1], parts[2]
-		err := _ssh.UploadAndRunPatch(config, filePattern, targetDir, tmpDir)
+		err := _ssh.UploadAndRunPatch(config, patchPattern, workDirParent, tmpDir)
 		if err != nil {
 			log.Fatalf("Failed to upload and execute script: %v", err)
 		}
 		return
 	case "awd":
 		initGit()
-		backupRemote(config, backupFlag, true)
+		backupRemote(config, config.Workdir, true)
 		unpack(".")
 		commitModify("Init mgit repo")
 		return
@@ -152,9 +142,7 @@ func MagicFunc(cfg *cmd.FlagConfig) {
 		commitModify("")
 		genPatch("1")
 		// TODO
-		parts := strings.Split("*.patch,/var/www,/tmp", ",")
-		filePattern, targetDir, tmpDir := parts[0], parts[1], parts[2]
-		err = _ssh.UploadAndRunPatch(config, filePattern, targetDir, tmpDir)
+		err = _ssh.UploadAndRunPatch(config, patchPattern, workDirParent, tmpDir)
 		if err != nil {
 			log.Fatalf("Failed to upload and execute script: %v", err)
 		}

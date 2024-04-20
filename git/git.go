@@ -44,6 +44,7 @@ pass = password
 scp = false
 private = %s
 workdir = /home/ctf/challenge
+tmpdir = /tmp
 `
 
 		// check if PEM exist

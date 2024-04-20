@@ -20,20 +20,21 @@
 - [ ] 对于python的部署和热更新
 
 ## Demo
+- `mssh` 通过cfg配置打开交互式ssh
+- `mgit -h` 输出帮助信息
 
-1 可以代替缺省值
-- mgit -u 可以将时间戳转化为当前的时间
-- -t 可以测试ssh和scp连接是否可以成功，通过configure文件中的账号密码，configure文件格式如下
-```
-host = 127.0.0.1
+- `mgit -i` 在当前目录初始化mgit，生成环境及配置文件
+```ini
+host = 10.10.10.10
 port = 22
 user = root
 pass = password
 scp = false
+private = false                  # private key file name (auto fill when a .pem file in current dir)
+workdir = /home/ctf/challenge    # workdir in remote server (eg. /var/www/html)
 ```
-- `mgit -h` 输出帮助信息
-
-- `mgit -i` 在当前目录初始化mgit，增加.gitignore，忽略mgit，edr,bk和patch等目录
+- `mgit -u` 可以将时间戳转化为当前的时间
+- `mgit -t` 可以测试ssh或scp连接是否可以成功
 
 - `mgit -c “fix ***”`在本地执行git commit，且commit message为“fix ***”，并输出commit_sha
 

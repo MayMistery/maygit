@@ -36,11 +36,13 @@ func SSHSession(cfg cmd.Config) {
 }
 
 func (t *SSHTerminal) updateTerminalSize() {
-
 	go func() {
 		// SIGWINCH is sent to the process when the window size of the terminal has
 		// changed.
 		sigwinchCh := make(chan os.Signal, 1)
+
+		// TODO in windows undefined: syscall.SIGWINCH
+
 		signal.Notify(sigwinchCh, syscall.SIGWINCH)
 
 		fd := int(os.Stdin.Fd())
@@ -78,7 +80,6 @@ func (t *SSHTerminal) updateTerminalSize() {
 			}
 		}
 	}()
-
 }
 
 func (t *SSHTerminal) interactiveSession() error {
@@ -122,6 +123,7 @@ func (t *SSHTerminal) interactiveSession() error {
 		return err
 	}
 
+	// TODO to handle error in windows
 	t.updateTerminalSize()
 
 	t.stdin, err = t.Session.StdinPipe()
