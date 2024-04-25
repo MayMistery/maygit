@@ -51,6 +51,9 @@ func ParseFlag(cfg *cmd.FlagConfig) {
 	if cfg.TestFlag {
 		testSSH(config)
 		return
+	} else if cfg.TestCgPassFlag {
+		TestSSHCgpass(config)
+		return
 	} else if cfg.DelFlag != "" {
 		deleteFile(config, cfg.DelFlag)
 		return

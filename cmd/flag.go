@@ -6,6 +6,7 @@ import (
 
 type FlagConfig struct {
 	TestFlag          bool
+	TestCgPassFlag    bool
 	InitFlag          bool
 	HelpFlag          bool
 	EdrFlag           bool
@@ -27,6 +28,7 @@ func Flags() *FlagConfig {
 
 	flag.BoolVar(&config.HelpFlag, "h", false, "Display help information")
 	flag.BoolVar(&config.TestFlag, "t", false, "Test SSH and SFTP connection")
+	flag.BoolVar(&config.TestCgPassFlag, "ct", false, "Test SSH and SFTP then change the passwd connection")
 	flag.BoolVar(&config.InitFlag, "i", false, "Initialize git in current directory")
 	flag.Int64Var(&config.TimestampFlag, "u", -1, "Convert a timestamp to human-readable date")
 	flag.BoolVar(&config.EdrFlag, "edr", false, "Upload contents and execute a command")

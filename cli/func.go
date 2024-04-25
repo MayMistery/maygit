@@ -56,6 +56,15 @@ func testSSH(config cmd.Config) {
 	}
 }
 
+func TestSSHCgpass(config cmd.Config) {
+	err := _ssh.TestSSHConnectionAndChangePass(config)
+	if err != nil {
+		log.Fatalf("SSH TestSSHCgpass Failed: %v", err)
+	} else {
+		fmt.Println("SSH TestSSHCgpass Success!")
+	}
+}
+
 func deleteFile(config cmd.Config, dir string) {
 	err := _ssh.DeleteRemoteDirContent(config, dir)
 	if err != nil {

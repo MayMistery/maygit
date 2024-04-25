@@ -7,17 +7,23 @@
 
 ## Features
 
-- 支持ssh的密码连接、私钥连接
+- 支持ssh的密码连接、私钥连接、密码更改
 - 支持低环境下的scp连接
 - 适用于多种web服务，包括php和二进制服务
 - patch模式，强制覆盖、删除模式，备份恢复模式，适用多重场景
 - 支持与AOIAWD联动，快速上传部署
 
-## Todo
-- [ ] 对于Windows_cmd命令环境的适配
-- [ ] 对于二进制部署的快捷部署
-- [ ] 对于java的部署和patch
-- [ ] 对于python的部署和热更新
+## 快速使用
+- `mssh` 通过cfg配置打开交互式ssh
+- `mgit -i` 初始化mgit仓库
+- `mgit -t` 测试ssh或scp连接是否可以成功
+- `mgit -ct` 测试并更改ssh密码
+- `mgit awd` 根据配置拉下AWD题目
+- `mgit cp` 提交commit并在远端patch
+- `mgit emerge` 直接打包并上传到远端
+- `mgit hard` 将最近一次tar打包备份覆盖到远端恢复
+
+
 
 ## Demo
 - `mssh` 通过cfg配置打开交互式ssh

@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"fmt"
+	"github.com/go-ini/ini"
 	"io"
 	"os"
 	"path/filepath"
@@ -87,6 +88,18 @@ func FindRecentFile(dir, filePattern string) (string, error) {
 	return latestFile, nil
 }
 
-func ModifyAuth(permit string, target string) {
-	// TODO add function to modify the file to the expect Permission
+func UpdateINIFile(filePath, newPassword string) error {
+	cfg, err := ini.Load(filePath)
+	if err != nil {
+		return fmt.Errorf("failed to load INI file: %v", err)
+	}
+
+	// Set the new password in the configuration
+	cfg.Section("").Key("pass").SetValue(newPassword)
+
+	// Save the modified configuration to the same file
+	if err := cfg.SaveTo(filePath); err != nil {
+		return fmt.Errorf("failed to save INI file: %v", err)
+	}
+	return nil
 }

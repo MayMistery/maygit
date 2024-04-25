@@ -14,6 +14,7 @@ type Config struct {
 	Private string `ini:"private"`
 	Workdir string `ini:"workdir"`
 	Tmpdir  string `ini:"tmpdir"`
+	NewPass string `ini:"newPass"`
 }
 
 func LoadConfig(filePath string) (Config, error) {

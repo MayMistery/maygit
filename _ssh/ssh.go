@@ -50,12 +50,51 @@ func EstablishSSHConnection(config cmd.Config) (*ssh.Client, error) {
 	}
 }
 
+func ChangePassword(client *ssh.Client, username string, newPassword string) error {
+	session, err := client.NewSession()
+	if err != nil {
+		return fmt.Errorf("failed to create session: %v", err)
+	}
+	defer session.Close()
+
+	// Replace 'username' with the actual username for which the password needs to be changed
+	cmdLine := fmt.Sprintf("echo %s:%s | chpasswd", username, newPassword)
+	if err := session.Run(cmdLine); err != nil {
+		return fmt.Errorf("failed to run password change command: %v", err)
+	}
+	return nil
+}
+
 func TestSSHConnection(config cmd.Config) error {
 	client, err := EstablishSSHConnection(config)
+
 	if err != nil {
 		return err
 	}
 	defer client.Close()
+	return nil
+}
+
+func TestSSHConnectionAndChangePass(config cmd.Config) error {
+	client, err := EstablishSSHConnection(config)
+
+	if err != nil {
+		return err
+	}
+	defer client.Close()
+
+	// Change the password after successful connection
+	if err := ChangePassword(client, config.User, config.NewPass); err != nil {
+		return fmt.Errorf("failed to change password: %v", err)
+	}
+
+	// Update the password in the INI file
+	if err := utils.UpdateINIFile("cfg.ini", config.NewPass); err != nil {
+		return fmt.Errorf("failed to update INI file: %v", err)
+	}
+
+	// print change success to %s
+	fmt.Printf("Password changed successfully for user %s to %s\n", config.User, config.NewPass)
 	return nil
 }
 

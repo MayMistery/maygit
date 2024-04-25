@@ -8,7 +8,7 @@ BUILD=`git rev-parse HEAD`
 
 LDFLAGS := -s -w -X main.Version=${VERSION} -X main.Build=${BUILD}
 
-os-archs=darwin:arm64 #darwin:amd64 freebsd:386 freebsd:amd64 linux:386 linux:amd64 linux:arm linux:arm64 windows:386 windows:amd64 windows:arm64 linux:mips64 linux:mips64le linux:mips:softfloat linux:mipsle:softfloat linux:riscv64
+os-archs=darwin:arm64 linux:amd64 #darwin:amd64 freebsd:386 freebsd:amd64 linux:386  linux:arm linux:arm64 windows:386 windows:amd64 windows:arm64 linux:mips64 linux:mips64le linux:mips:softfloat linux:mipsle:softfloat linux:riscv64
 
 all: build
 
