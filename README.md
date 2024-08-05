@@ -3,6 +3,8 @@
 ![version](https://img.shields.io/github/v/release/MayMistery/maygit?include_prereleases&label=version)
 ![license](https://img.shields.io/github/license/MayMistery/maygit?color=FF5531)
 
+[English version)](README.en.md)
+
 轻量级应急响应、部署、热重载工具，适用于awd或者个人服务，可基于ssh、sftp或scp，借助git进行本地版本管理。
 
 ## Features
@@ -22,7 +24,6 @@
 - `mgit cp` 提交commit并在远端patch
 - `mgit emerge` 直接打包并上传到远端
 - `mgit hard` 将最近一次tar打包备份覆盖到远端恢复
-- `mssh` 通过cfg配置打开交互式ssh
 
 ## 小工具sshfk
 - `go run main.go <CIDR> <username> <password> <port> <command>` 批量在CIDR范围内的主机上执行命令
