@@ -3,15 +3,15 @@
 ![version](https://img.shields.io/github/v/release/MayMistery/maygit?include_prereleases&label=version)
 ![license](https://img.shields.io/github/license/MayMistery/maygit?color=FF5531)
 
-轻量级应急响应工具，适用于web服务patch、部署、热重载，可基于ssh、scp连接传输，利用git进行本地版本管理（可使用已有git）。适用于轻量web部署、应急处置、AWD攻防等
+轻量级应急响应、部署、热重载工具，适用于awd或者个人服务，可基于ssh、sftp或scp，借助git进行本地版本管理。
 
 ## Features
 
-- 支持ssh的密码连接、私钥连接、密码更改
+- 支持ssh的密码连接、私钥连接、密码快速更改
 - 支持低环境下的scp连接
-- 适用于多种web服务，包括php和二进制服务
-- patch模式，强制覆盖、删除模式，备份恢复模式，适用多重场景
-- 支持与AOIAWD联动，快速上传部署
+- 适用于多种服务，包括各类web、pwn等
+- patch模式、强制覆盖模式、删除模式，备份恢复模式，适用于多重场景
+- 支持与AOIAWD等联动，快速上传部署流量监控服务
 
 ## 快速使用
 - `mssh` 通过cfg配置打开交互式ssh
@@ -22,24 +22,29 @@
 - `mgit cp` 提交commit并在远端patch
 - `mgit emerge` 直接打包并上传到远端
 - `mgit hard` 将最近一次tar打包备份覆盖到远端恢复
+- `mssh` 通过cfg配置打开交互式ssh
 
+## 小工具sshfk
+- `go run main.go <CIDR> <username> <password> <port> <command>` 批量在CIDR范围内的主机上执行命令
 
 
 ## Demo
-- `mssh` 通过cfg配置打开交互式ssh
+
 - `mgit -h` 输出帮助信息
 
 - `mgit -i` 在当前目录初始化mgit，生成环境及配置文件
 ```ini
-host = 10.10.10.10
+host = 127.0.0.1
 port = 22
-user = root
+user = ctf
 pass = password
 scp = false
 private = false                  # private key file name (auto fill when a .pem file in current dir)
 workdir = /home/ctf/challenge    # workdir in remote server (eg. /var/www/html)
+tmpdir = /tmp                    # tmpdir in remote server (eg. /tmp)
+newPass = hello#!@
 ```
-- `mgit -u` 可以将时间戳转化为当前的时间
+- `mgit -u <timestamp>` 可以将时间戳转化为当前的时间
 - `mgit -t` 可以测试ssh或scp连接是否可以成功
 
 - `mgit -c “fix ***”`在本地执行git commit，且commit message为“fix ***”，并输出commit_sha
